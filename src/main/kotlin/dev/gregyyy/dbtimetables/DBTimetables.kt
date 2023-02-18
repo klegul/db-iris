@@ -5,15 +5,34 @@ import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class DBTimetables(val clientId: String, val apiKey: String) {
+class DBTimetables {
 
     companion object {
         private const val PATH_DELIMITER = "|"
+        const val BASE_URL_UNOFFICIAL = "https://iris.noncd.db.de/iris-tts/timetable"
+        const val BASE_URL_OFFICIAL = "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1"
+    }
+
+    private val clientId: String?
+    private val apiKey: String?
+
+    private val irisCaller: IrisCaller
+
+    constructor(clientId: String, apiKey: String) {
+        this.clientId = clientId
+        this.apiKey = apiKey
+        this.irisCaller = IrisCaller(BASE_URL_OFFICIAL)
+    }
+
+    constructor() {
+        this.clientId = null
+        this.apiKey = null
+        this.irisCaller = IrisCaller(BASE_URL_UNOFFICIAL)
     }
 
     fun getTimetable(stationEva: String, dateTime: LocalDateTime): Timetable {
-        val irisTimetable = IrisCaller.getCurrentTimetable(stationEva, dateTime)
-        val irisChangeTimetable = IrisCaller.getFullChangesTimetable(stationEva)
+        val irisTimetable = irisCaller.getCurrentTimetable(stationEva, dateTime)
+        val irisChangeTimetable = irisCaller.getFullChangesTimetable(stationEva)
 
         val journeys = mutableListOf<Journey>()
 
@@ -98,8 +117,7 @@ class DBTimetables(val clientId: String, val apiKey: String) {
             journeys.add(journey)
         }
 
-        val timetable = Timetable(irisTimetable.station, journeys)
-        return timetable;
+        return Timetable(irisTimetable.station, journeys)
     }
 
     private fun getDateTime(dateTime: String?): LocalDateTime? {

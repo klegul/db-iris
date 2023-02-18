@@ -11,38 +11,34 @@ import okhttp3.Request
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class IrisCaller {
+class IrisCaller(private val baseUrl: String) {
 
-    companion object {
+    private val client = OkHttpClient()
+    private val mapper = XmlMapper(JacksonXmlModule().apply {
+        setDefaultUseWrapper(false)
+    }).registerKotlinModule()
+        .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-        private val client = OkHttpClient()
-        private val mapper = XmlMapper(JacksonXmlModule().apply {
-            setDefaultUseWrapper(false)
-        }).registerKotlinModule()
-            .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    fun getCurrentTimetable(stationEva: String, dateTime: LocalDateTime): IrisTimetable {
+        val date = dateTime.format(DateTimeFormatter.ofPattern("yyMMdd"))
+        val hour = dateTime.format(DateTimeFormatter.ofPattern("HH"))
 
-        fun getCurrentTimetable(stationEva: String, dateTime: LocalDateTime): IrisTimetable {
-            val date = dateTime.format(DateTimeFormatter.ofPattern("yyMMdd"))
-            val hour = dateTime.format(DateTimeFormatter.ofPattern("HH"))
+        val url = "$baseUrl/plan/$stationEva/$date/$hour"
+        val request = Request.Builder().url(url).build()
+        val response = client.newCall(request).execute()
+        val body = response.body?.string()
 
-            val url = "https://iris.noncd.db.de/iris-tts/timetable/plan/$stationEva/$date/$hour"
-            val request = Request.Builder().url(url).build()
-            val response = client.newCall(request).execute()
-            val body = response.body?.string()
+        return mapper.readValue(body, IrisTimetable::class.java)
+    }
 
-            return mapper.readValue(body, IrisTimetable::class.java)
-        }
+    fun getFullChangesTimetable(stationEva: String): IrisTimetable {
+        val url = "$baseUrl/fchg/$stationEva"
+        val request = Request.Builder().url(url).build()
+        val response = client.newCall(request).execute()
+        val body = response.body?.string()
 
-        fun getFullChangesTimetable(stationEva: String): IrisTimetable {
-            val url = "https://iris.noncd.db.de/iris-tts/timetable/fchg/$stationEva"
-            val request = Request.Builder().url(url).build()
-            val response = client.newCall(request).execute()
-            val body = response.body?.string()
-
-            return mapper.readValue(body, IrisTimetable::class.java)
-        }
-
+        return mapper.readValue(body, IrisTimetable::class.java)
     }
 
 }

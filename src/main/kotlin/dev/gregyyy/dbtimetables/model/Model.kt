@@ -119,5 +119,5 @@ enum class MessageType(val id: String, val message: String) {
 }
 
 enum class TrainType {
-    ICE, IC, EC, IRE, RE, RB, S, MEX, TGV, NJ
+    ICE, IC, EC, IRE, RE, RB, S, MEX, TGV, NJ, Bus
 }

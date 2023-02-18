@@ -6,7 +6,7 @@ class TestDBTimetables {
 
     @Test
     fun getTimetable() {
-        val timetable = DBTimetables("", "").getTimetable("8000191", LocalDateTime.now())
+        val timetable = DBTimetables().getTimetable("8000191", LocalDateTime.now())
         println(timetable)
     }
 
