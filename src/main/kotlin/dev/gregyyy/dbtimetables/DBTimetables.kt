@@ -38,6 +38,8 @@ class DBTimetables {
 
         for (irisJourney in irisTimetable.journeys) {
             val platform: String = irisJourney.arrival?.platform ?: irisJourney.departure?.platform ?: ""
+            val arrivalTime = getDateTime(irisJourney.arrival?.dateTime)
+            val departureTime = getDateTime(irisJourney.departure?.dateTime)
             var arrivalDelay: Int? = null
             var departureDelay: Int? = null
             val messages = mutableListOf<Message>()
@@ -45,16 +47,18 @@ class DBTimetables {
 
             for (irisChangeJourney in irisChangeTimetable.journeys) {
                 if (irisChangeJourney.id == irisJourney.id) {
-                    if (irisJourney.arrival != null) {
+                    if (irisJourney.arrival != null && arrivalTime != null) {
                         val delayedArrival = getDateTime(irisChangeJourney.arrival?.changedTime)
-                        arrivalDelay = Duration.between(getDateTime(irisJourney.arrival.dateTime), delayedArrival)
-                            .toMinutes().toInt()
+                        if (delayedArrival != null) {
+                            arrivalDelay = Duration.between(arrivalTime, delayedArrival).toMinutes().toInt()
+                        }
                     }
 
-                    if (irisJourney.departure != null) {
+                    if (irisJourney.departure != null && departureTime != null) {
                         val delayedDeparture = getDateTime(irisChangeJourney.departure?.changedTime)
-                        departureDelay = Duration.between(getDateTime(irisJourney.departure.dateTime), delayedDeparture)
-                            .toMinutes().toInt()
+                        if (delayedDeparture != null) {
+                            departureDelay = Duration.between(departureTime, delayedDeparture).toMinutes().toInt()
+                        }
                     }
 
                     val irisMessages = mutableListOf<IrisMessage>()
