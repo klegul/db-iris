@@ -121,6 +121,8 @@ class DBTimetables {
             journeys.add(journey)
         }
 
+        journeys.sortBy { journey -> journey.departureTime }
+
         return Timetable(irisTimetable.station, journeys)
     }
 

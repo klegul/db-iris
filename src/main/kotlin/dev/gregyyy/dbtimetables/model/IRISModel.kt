@@ -1,5 +1,7 @@
 package dev.gregyyy.dbtimetables.model
 
+import com.fasterxml.jackson.annotation.JsonAlias
+import com.fasterxml.jackson.annotation.JsonIncludeProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonRootName
 
@@ -85,7 +87,10 @@ enum class IRISMessageType {
 }
 
 enum class MessageCategory {
+    @JsonAlias("Bauarbeiten. (Quelle: zuginfo.nrw)")
     Bauarbeiten,
+    @JsonAlias("Information. (Quelle: zuginfo.nrw)")
     Information,
+    @JsonAlias("Störung. (Quelle: zuginfo.nrw)")
     Störung
 }
