@@ -92,5 +92,7 @@ enum class MessageCategory {
     @JsonAlias("Information. (Quelle: zuginfo.nrw)")
     Information,
     @JsonAlias("Störung. (Quelle: zuginfo.nrw)")
-    Störung
+    Störung,
+    @JsonAlias("Großstörung. (Quelle: zuginfo.nrw)")
+    Großstörung
 }
