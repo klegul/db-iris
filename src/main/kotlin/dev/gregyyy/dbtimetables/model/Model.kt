@@ -1,7 +1,6 @@
 package dev.gregyyy.dbtimetables.model
 
-import java.lang.IllegalArgumentException
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 data class Timetable(
     val station: String,
@@ -13,14 +12,15 @@ data class Journey(
     val line: String?,
     val number: String,
     val platform: String,
-    val arrivalTime: LocalDateTime?,
-    val departureTime: LocalDateTime?,
+    val arrivalTime: ZonedDateTime?,
+    val departureTime: ZonedDateTime?,
     val arrivalDelay: Int?,
     val departureDelay: Int?,
     val messages: List<Message>,
     val path: List<String>,
     val changedPath: List<String>?
 ) {
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -28,23 +28,25 @@ data class Journey(
         other as Journey
 
         if (trainType != other.trainType) return false
-        if (line != other.line) return false
+        if (number != other.number) return false
+        if (path != other.path) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = trainType?.hashCode() ?: 0
-        result = 31 * result + (line?.hashCode() ?: 0)
+        result = 31 * result + number.hashCode()
+        result = 31 * result + path.hashCode()
         return result
     }
 }
 
 data class Message(
-    val timestamp: LocalDateTime,
+    val timestamp: ZonedDateTime,
     val type: MessageType,
-    val from: LocalDateTime?,
-    val to: LocalDateTime?,
+    val from: ZonedDateTime?,
+    val to: ZonedDateTime?,
     val text: String?
 )
 

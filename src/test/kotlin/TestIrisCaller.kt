@@ -1,13 +1,14 @@
 import dev.gregyyy.dbtimetables.DBTimetables
 import dev.gregyyy.dbtimetables.IrisCaller
 import org.junit.jupiter.api.Test
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 
 class TestIrisCaller {
 
     @Test
     fun testGetCurrentTimetable() {
-        val timetable = IrisCaller(DBTimetables.BASE_URL_UNOFFICIAL).getCurrentTimetable("8000191", LocalDateTime.now())
+        val timetable = IrisCaller(DBTimetables.BASE_URL_UNOFFICIAL)
+            .getCurrentTimetable("8000191", ZonedDateTime.now())
         println(timetable)
     }
 

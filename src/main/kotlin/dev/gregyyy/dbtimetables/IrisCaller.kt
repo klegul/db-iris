@@ -8,7 +8,8 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dev.gregyyy.dbtimetables.model.IrisTimetable
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class IrisCaller(private val baseUrl: String) {
@@ -20,9 +21,11 @@ class IrisCaller(private val baseUrl: String) {
         .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-    fun getCurrentTimetable(stationEva: String, dateTime: LocalDateTime): IrisTimetable {
-        val date = dateTime.format(DateTimeFormatter.ofPattern("yyMMdd"))
-        val hour = dateTime.format(DateTimeFormatter.ofPattern("HH"))
+    fun getCurrentTimetable(stationEva: String, dateTime: ZonedDateTime): IrisTimetable {
+        val date = dateTime.format(DateTimeFormatter.ofPattern("yyMMdd")
+            .withZone(ZoneId.of("Europe/Berlin")))
+        val hour = dateTime.format(DateTimeFormatter.ofPattern("HH")
+            .withZone(ZoneId.of("Europe/Berlin")))
 
         val url = "$baseUrl/plan/$stationEva/$date/$hour"
         val request = Request.Builder().url(url).build()

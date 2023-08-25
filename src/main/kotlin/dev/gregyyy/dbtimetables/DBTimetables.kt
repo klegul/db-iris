@@ -2,7 +2,8 @@ package dev.gregyyy.dbtimetables
 
 import dev.gregyyy.dbtimetables.model.*
 import java.time.Duration
-import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class DBTimetables {
@@ -30,7 +31,7 @@ class DBTimetables {
         this.irisCaller = IrisCaller(BASE_URL_UNOFFICIAL)
     }
 
-    fun getTimetable(stationEva: String, dateTime: LocalDateTime): Timetable {
+    fun getTimetable(stationEva: String, dateTime: ZonedDateTime): Timetable {
         val irisTimetable = irisCaller.getCurrentTimetable(stationEva, dateTime)
         val irisChangeTimetable = irisCaller.getFullChangesTimetable(stationEva)
 
@@ -126,9 +127,10 @@ class DBTimetables {
         return Timetable(irisTimetable.station, journeys)
     }
 
-    private fun getDateTime(dateTime: String?): LocalDateTime? {
+    private fun getDateTime(dateTime: String?): ZonedDateTime? {
         if (dateTime == null) return null
-        return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyMMddHHmm"))
+        val formatter = DateTimeFormatter.ofPattern("yyMMddHHmm").withZone(ZoneId.of("Europe/Berlin"))
+        return ZonedDateTime.parse(dateTime, formatter)
     }
 
 }
