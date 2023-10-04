@@ -179,7 +179,7 @@ enum class TrainType {
     IRE, MEX, RE, FEX, RB, S,
     // other EVUs
     AKN, ALX, BE, BEX, BOB, ENO, ERB, ERX, GABW, GABY, HZL, ME, MRB, NBE, NOB, NWB, OE, RT, RTB, SAB, SBB, SB, SE, SWE,
-    WFB, TRI, BRB, RDC, STN, TL, RRB, HLB, VIA, TLX, erx, R, UEX, SVG,
+    WFB, TRI, BRB, RDC, STN, TL, RRB, HLB, VIA, TLX, erx, R, UEX, SVG, EST,
     // non trains
     Bus
 }
